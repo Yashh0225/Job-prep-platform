@@ -26,7 +26,8 @@ const Register = () => {
   };
 
   const handleGoogle = () => {
-    window.location.href = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/google`;
+    const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+    window.location.href = `${baseUrl.replace(/\/$/, '')}/auth/google`;
   };
 
   return (
