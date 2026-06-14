@@ -4,7 +4,7 @@ import { useToast } from '../context/ToastContext';
 import api from '../services/api';
 
 const History = () => {
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState('analyses');
   const [analyses, setAnalyses] = useState([]);
   const [roadmaps, setRoadmaps] = useState([]);
   const [interviews, setInterviews] = useState([]);
@@ -74,7 +74,6 @@ const History = () => {
         <input className="input-field" placeholder="🔍 Search by title, company..." value={search} onChange={e => setSearch(e.target.value)} style={{ flex: 1, minWidth: '200px' }} />
         <div className="tabs">
           {[
-            { key: 'all', label: 'All' },
             { key: 'analyses', label: `🔍 Analyses (${analyses.length})` },
             { key: 'roadmaps', label: `🗺️ Roadmaps (${roadmaps.length})` },
             { key: 'interviews', label: `🎤 Interviews (${interviews.length})` },
@@ -87,9 +86,8 @@ const History = () => {
       </div>
 
       {/* Analyses */}
-      {(activeTab === 'all' || activeTab === 'analyses') && filteredAnalyses.length > 0 && (
+      {activeTab === 'analyses' && filteredAnalyses.length > 0 && (
         <div style={{ marginBottom: '32px' }}>
-          {activeTab === 'all' && <h2 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '12px' }}>🔍 Resume Analyses</h2>}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {filteredAnalyses.map(a => (
               <Link key={a._id} to={`/analyze/${a._id}`} className="glass-card" style={{ padding: '18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -108,9 +106,8 @@ const History = () => {
       )}
 
       {/* Roadmaps */}
-      {(activeTab === 'all' || activeTab === 'roadmaps') && filteredRoadmaps.length > 0 && (
+      {activeTab === 'roadmaps' && filteredRoadmaps.length > 0 && (
         <div style={{ marginBottom: '32px' }}>
-          {activeTab === 'all' && <h2 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '12px' }}>🗺️ Roadmaps</h2>}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {filteredRoadmaps.map(r => (
               <Link key={r._id} to={`/roadmap/${r._id}`} className="glass-card" style={{ padding: '18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -129,9 +126,8 @@ const History = () => {
       )}
 
       {/* Interviews */}
-      {(activeTab === 'all' || activeTab === 'interviews') && filteredInterviews.length > 0 && (
+      {activeTab === 'interviews' && filteredInterviews.length > 0 && (
         <div style={{ marginBottom: '32px' }}>
-          {activeTab === 'all' && <h2 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '12px' }}>🎤 Mock Interviews</h2>}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {filteredInterviews.map(i => (
               <Link key={i._id} to={i.status === 'completed' ? `/mock-result/${i._id}` : `/mock-interview/${i._id}`}
@@ -157,12 +153,22 @@ const History = () => {
       )}
 
       {/* Empty State */}
-      {!filteredAnalyses.length && !filteredRoadmaps.length && !filteredInterviews.length && (
+      {((activeTab === 'analyses' && !filteredAnalyses.length) || 
+        (activeTab === 'roadmaps' && !filteredRoadmaps.length) || 
+        (activeTab === 'interviews' && !filteredInterviews.length)) && (
         <div style={{ textAlign: 'center', padding: '60px 24px' }}>
           <p style={{ fontSize: '48px', marginBottom: '16px' }}>📋</p>
-          <p style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>No history yet</p>
-          <p style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '24px' }}>Start with an analysis, roadmap, or mock interview!</p>
-          <Link to="/analyze" className="btn btn-primary">Get Started</Link>
+          <p style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>No history found</p>
+          <p style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '24px' }}>
+            {activeTab === 'analyses' && 'Start a resume analysis to see it here!'}
+            {activeTab === 'roadmaps' && 'Create a roadmap to see it here!'}
+            {activeTab === 'interviews' && 'Take a mock interview to see it here!'}
+          </p>
+          <Link to={activeTab === 'analyses' ? '/analyze' : activeTab === 'roadmaps' ? '/roadmap' : '/mock-setup'} className="btn btn-primary">
+            {activeTab === 'analyses' && 'Analyze Resume'}
+            {activeTab === 'roadmaps' && 'Create Roadmap'}
+            {activeTab === 'interviews' && 'Start Mock Interview'}
+          </Link>
         </div>
       )}
     </div>
