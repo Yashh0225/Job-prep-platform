@@ -51,8 +51,8 @@ cd server && npm run dev
 cd client && npm run dev
 ```
 
-- Frontend: http://localhost:5173
-- Backend: http://localhost:5000
+- Frontend: https://job-prep-platform.vercel.app/
+- Backend: https://job-prep-platform.onrender.com
 
 ## Deployment
 
